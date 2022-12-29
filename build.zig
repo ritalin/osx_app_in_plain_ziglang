@@ -12,6 +12,9 @@ pub fn build(b: *std.build.Builder) void {
     const mode = b.standardReleaseOptions();
 
     const exe = b.addExecutable("osx_app_in_plain_ziglang", "src/main.zig");
+    exe.addSystemIncludeDir("/usr/include");
+    exe.addFrameworkDir("/System/Library/Frameworks");
+    exe.linkFramework("Foundation");
     exe.setTarget(target);
     exe.setBuildMode(mode);
     exe.install();
