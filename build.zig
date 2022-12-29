@@ -15,6 +15,7 @@ pub fn build(b: *std.build.Builder) void {
     exe.addSystemIncludeDir("/usr/include");
     exe.addFrameworkDir("/System/Library/Frameworks");
     exe.linkFramework("Foundation");
+    exe.linkFramework("AppKit");
     exe.setTarget(target);
     exe.setBuildMode(mode);
     exe.install();

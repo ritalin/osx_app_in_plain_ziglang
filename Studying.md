@@ -76,3 +76,39 @@ fn msgSend_1(self: objc.Class, selector: objc.SEL) objc.id {
 ```
 
 see also: https://github.com/hazeycode/zig-objcrt/blob/main/src/message.zig
+
+## Organize by usingnamespace
+
+Declalation
+
+```ziglang
+// objc.zig
+
+pub usingnamespace @cImport({
+    @cInclude("objc/objc.h");
+    @cInclude("objc/message.h");
+    @cInclude("objc/NSObjCRuntime.h");
+});
+```
+
+Import
+
+```
+// main.zig
+
+const objc = @import("objc.zig");
+```
+
+## Activate NSApp
+
+Setter selector has colon symbol.
+
+```
+var setActivationPolicySEL: objc.SEL = objc.sel_registerName("setActivationPolicy:");
+```
+
+Add linkFramework build property `AppKit` to `build.zig`.
+
+```
+exe.linkFramework("AppKit");
+```
