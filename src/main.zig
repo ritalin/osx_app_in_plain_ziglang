@@ -1,6 +1,10 @@
 const std = @import("std");
 
 const objc = @import("objc.zig");
+const geo = @cImport(@cInclude("src/geo.h"));
+
+extern "C" fn new_window_msgSend(alloc: objc.id, selector: objc.SEL, rect: geo.NSRect, styleMask: c_ulong, backing: c_ulong, p_defer: objc.BOOL) objc.id;
+extern "C" fn get_run_loop_mode() objc.id;
 
 fn msgSend_1(self: objc.Class, selector: objc.SEL) objc.id {
     const FnType = fn (@TypeOf(self), objc.SEL) callconv(.C) objc.id;
@@ -59,6 +63,24 @@ fn msgSend_8(self: objc.id, selector: objc.SEL, arg1: objc.id) objc.id {
     return @call(.{}, func, .{ self, selector, arg1 });
 }
 
+fn msgSend_9(self: objc.id, selector: objc.SEL, arg1: geo.NSRect, arg2: objc.NSUInteger, arg3: objc.NSUInteger, arg4: objc.BOOL) callconv(.C) objc.id {
+    return new_window_msgSend(self, selector, arg1, arg2, arg3, arg4);
+}
+fn msgSend_10(self: objc.id, selector: objc.SEL, arg1: objc.BOOL) void {
+    const FnType = fn (@TypeOf(self), objc.SEL, @TypeOf(arg1)) callconv(.C) void;
+
+    var func = @ptrCast(FnType, objc.objc_msgSend);
+
+    return @call(.{}, func, .{ self, selector, arg1 });
+}
+fn msgSend_11(self: objc.id, selector: objc.SEL, arg1: c_ulong, arg2: objc.id, arg3: objc.id, arg4: objc.BOOL) objc.id {
+    const FnType = fn (@TypeOf(self), objc.SEL, @TypeOf(arg1), @TypeOf(arg2), @TypeOf(arg3), @TypeOf(arg4)) callconv(.C) objc.id;
+
+    var func = @ptrCast(FnType, objc.objc_msgSend);
+
+    return @call(.{}, func, .{ self, selector, arg1, arg2, arg3, arg4 });
+}
+
 fn shareedApp() objc.id {
     var appClass: objc.Class = objc.objc_getClass("NSApplication");
     std.debug.assert(appClass != null);
@@ -69,6 +91,15 @@ fn shareedApp() objc.id {
     std.debug.assert(app != null);
 
     return app;  
+}
+
+fn windowWillClose(self: objc.id, _: objc.SEL, _: objc.id) void {
+    var app: objc.id = shareedApp();
+
+    var terminateSEL: objc.SEL = objc.sel_registerName("terminate:");
+    std.debug.assert(terminateSEL != null);
+
+    msgSend_5(app, terminateSEL, self);
 }
 
 fn makeQuitMenuItemName() objc.id {
@@ -162,7 +193,6 @@ fn applicationWillFinishLaunching(_: objc.id, _: objc.SEL, _: objc.id) void {
         var terminateSEL: objc.SEL = objc.sel_registerName("terminate:");
         std.debug.assert(terminateSEL != null);
 
-        // break :brk msgSend_4(alloc, initSEL); 
         break :brk msgSend_7(alloc, initWithTitleSEL, title, terminateSEL, itemKey); 
     };
     std.debug.assert(quitMenuItem != null);
@@ -176,7 +206,70 @@ fn applicationWillFinishLaunching(_: objc.id, _: objc.SEL, _: objc.id) void {
     var setMainMenuSEL: objc.SEL = objc.sel_registerName("setMainMenu:");
     std.debug.assert(setMainMenuSEL != null);
 
-    msgSend_5(app, setMainMenuSEL, mbar);    
+    msgSend_5(app, setMainMenuSEL, mbar);
+
+    // Window
+    var rect = geo.NSRect { .origin = .{ .x = 0, .y = 0 }, .size = .{ .width = 500, .height = 500 } };
+
+    var NSWindowClass: objc.Class = objc.objc_getClass("NSWindow");
+    std.debug.assert(NSWindowClass != null);
+
+    var w = brk: { 
+        var alloc: objc.id = msgSend_1(NSWindowClass, allocSEL);
+        std.debug.assert(alloc != null);
+        
+        var initWithContentRectSEL: objc.SEL = objc.sel_registerName("initWithContentRect:styleMask:backing:defer:");
+        std.debug.assert(initWithContentRectSEL != null);
+
+        break :brk msgSend_9(alloc, initWithContentRectSEL, rect, 15, 2, objc.NO);
+    };
+    std.debug.assert(w != null);
+
+    //// setReleasedWhenClosed
+
+    var setReleasedWhenClosedSEL: objc.SEL = objc.sel_registerName("setReleasedWhenClosed:");
+    std.debug.assert(setReleasedWhenClosedSEL != null);
+
+    msgSend_10(w, setReleasedWhenClosedSEL, objc.NO);
+    //// Window delegate
+
+    var NSObjectClass: objc.Class = objc.objc_getClass("NSObject");
+    std.debug.assert(NSObjectClass != null);
+
+    var WindowDelegateClass: objc.Class = objc.objc_allocateClassPair(NSObjectClass, "WindowDelegate", 0);
+    std.debug.assert(WindowDelegateClass != null);
+
+    var NSWindowDelegateProtocol: [*c]objc.Protocol = objc.objc_getProtocol("NSWindowDelegate");
+
+    {
+        var res: objc.BOOL = objc.class_addProtocol(WindowDelegateClass, NSWindowDelegateProtocol);
+        std.debug.assert(res != 0);
+    }
+
+    var delegate: objc.id = brk: {
+        var alloc: objc.id = msgSend_1(WindowDelegateClass, allocSEL);
+        std.debug.assert(alloc != null);
+
+        break :brk msgSend_4(alloc, initSEL);
+    };
+    std.debug.assert(delegate != null);
+
+    {
+        var windowWillCloseSEL: objc.SEL = objc.sel_registerName("windowWillClose:");
+        std.debug.assert(windowWillCloseSEL != null);
+
+        var res: objc.BOOL = objc.class_addMethod(WindowDelegateClass, windowWillCloseSEL, @ptrCast(objc.IMP, windowWillClose), "v@:@");
+        std.debug.assert(res != 0);
+    }
+
+    var setDelegateSEL: objc.SEL = objc.sel_registerName("setDelegate:");
+    msgSend_5(w, setDelegateSEL, delegate);
+
+    var makeKeyAndOrderFrontSEL: objc.SEL = objc.sel_registerName("makeKeyAndOrderFront:");
+    msgSend_5(w, makeKeyAndOrderFrontSEL, w);
+
+    var activateIgnoringOtherAppsSEL: objc.SEL = objc.sel_registerName("activateIgnoringOtherApps:");
+    msgSend_10(app, activateIgnoringOtherAppsSEL, objc.YES);
 }
 
 pub fn main() anyerror!void {

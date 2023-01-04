@@ -99,6 +99,10 @@ pub fn build(b: *std.build.Builder) void {
 
     const exe = b.addExecutable("osx_app_in_plain_ziglang", "src/main.zig");
     exe.addSystemIncludeDir("/usr/include");
+    
+    exe.addIncludeDir(".");
+    exe.addCSourceFiles(&[_][]const u8{ "src/runloop.c" }, &[0][]const u8{});
+
     exe.addFrameworkDir("/System/Library/Frameworks");
     exe.linkFramework("Foundation");
     exe.linkFramework("AppKit");
