@@ -113,6 +113,32 @@ Add linkFramework build property `AppKit` to `build.zig`.
 exe.linkFramework("AppKit");
 ```
 
+## Assemble Obje-C Runtime Type Encoding
 
+* encode return and args type to specified character.
+* see also: https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html
 
+* Encoded sequence is `Return Type` followed by `Arguments`.
 
+## Binding
+
+* LLVM-AST 
+    * https://clang.llvm.org/docs/IntroductionToTheClangAST.html
+
+* dump header as json
+
+clang -Xclang -ast-dump=json -fsyntax-only -fblocks -xobjective-c <Patth-to>
+
+## Test
+
+* For in-source-test, specifying `--main-pkg-path` option allow to access siglings file
+
+```
+zig test <path/to> --main-pkg-path ../
+```
+
+see also: https://github.com/ziglang/zig/issues/2024#issuecomment-1022918095
+
+## Enum Flags
+
+see: https://github.com/ziglang/zig/issues/4185#issuecomment-574755578
