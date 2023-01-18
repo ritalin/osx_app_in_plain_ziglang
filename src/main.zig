@@ -3,82 +3,106 @@ const std = @import("std");
 const objc = @import("objc.zig");
 const geo = @cImport(@cInclude("src/geo.h"));
 
+const MsgSend = @import("msg_send.zig").MsgSend;
+const Selector = @import("msg_send.zig").Selector;
+
 extern "C" fn new_window_msgSend(alloc: objc.id, selector: objc.SEL, rect: geo.NSRect, styleMask: c_ulong, backing: c_ulong, p_defer: objc.BOOL) objc.id;
 extern "C" fn get_run_loop_mode() objc.id;
 
 fn msgSend_1(self: objc.Class, selector: objc.SEL) objc.id {
-    const FnType = fn (@TypeOf(self), objc.SEL) callconv(.C) objc.id;
+    const FnType = *const fn (@TypeOf(self), objc.SEL) callconv(.C) objc.id;
 
-    var func = @ptrCast(FnType, objc.objc_msgSend);
+    var func = @ptrCast(FnType, &objc.objc_msgSend);
 
-    return @call(.{}, func, .{ self, selector });
+    // return @call(.{}, func, .{ self, selector });
+    return @call(.auto, func, .{ self, selector });
 }
 fn msgSend_2(self: objc.id, selector: objc.SEL, arg1: objc.NSInteger) bool {
-    const FnType = fn (@TypeOf(self), objc.SEL, @TypeOf(arg1)) callconv(.C) bool;
+    const FnType = *const fn (@TypeOf(self), objc.SEL, @TypeOf(arg1)) callconv(.C) bool;
 
-    var func = @ptrCast(FnType, objc.objc_msgSend);
+    var func = @ptrCast(FnType, &objc.objc_msgSend);
 
-    return @call(.{}, func, .{ self, selector, arg1 });
+    // return @call(.{}, func, .{ self, selector, arg1 });
+    return @call(.auto, func, .{ self, selector, arg1 });
 }
 fn msgSend_3(self: objc.id, selector: objc.SEL) void {
-    const FnType = fn (@TypeOf(self), objc.SEL) callconv(.C) void;
+    const FnType = *const fn (@TypeOf(self), objc.SEL) callconv(.C) void;
 
-    var func = @ptrCast(FnType, objc.objc_msgSend);
+    var func = @ptrCast(FnType, &objc.objc_msgSend);
 
-    return @call(.{}, func, .{ self, selector });
+    // return @call(.{}, func, .{ self, selector });
+    return @call(.auto, func, .{ self, selector });
 }
 fn msgSend_4(self: objc.id, selector: objc.SEL) objc.id {
-    const FnType = fn (@TypeOf(self), objc.SEL) callconv(.C) objc.id;
+    const FnType = *const fn (@TypeOf(self), objc.SEL) callconv(.C) objc.id;
 
-    var func = @ptrCast(FnType, objc.objc_msgSend);
+    var func = @ptrCast(FnType, &objc.objc_msgSend);
 
-    return @call(.{}, func, .{ self, selector });
+    // return @call(.{}, func, .{ self, selector });
+    return @call(.auto, func, .{ self, selector });
 }
 fn msgSend_5(self: objc.id, selector: objc.SEL, arg1: objc.id) void {
-    const FnType = fn (@TypeOf(self), objc.SEL, @TypeOf(arg1)) callconv(.C) void;
+    const FnType = *const fn (@TypeOf(self), objc.SEL, @TypeOf(arg1)) callconv(.C) void;
 
-    var func = @ptrCast(FnType, objc.objc_msgSend);
+    var func = @ptrCast(FnType, &objc.objc_msgSend);
 
-    return @call(.{}, func, .{ self, selector, arg1 });
+    // return @call(.{}, func, .{ self, selector, arg1 });
+    return @call(.auto, func, .{ self, selector, arg1 });
 }
 fn msgSend_6(self: objc.Class, selector: objc.SEL, arg1: [*c]const u8) objc.id {
-    const FnType = fn (@TypeOf(self), objc.SEL, @TypeOf(arg1)) callconv(.C) objc.id;
+    const FnType = *const fn (@TypeOf(self), objc.SEL, @TypeOf(arg1)) callconv(.C) objc.id;
 
-    var func = @ptrCast(FnType, objc.objc_msgSend);
+    var func = @ptrCast(FnType, &objc.objc_msgSend);
 
-    return @call(.{}, func, .{ self, selector, arg1 });
+    // return @call(.{}, func, .{ self, selector, arg1 });
+    return @call(.auto, func, .{ self, selector, arg1 });
 }
 fn msgSend_7(self: objc.id, selector: objc.SEL, arg1: objc.id, arg2: objc.SEL, arg3: objc.id) objc.id {
-    const FnType = fn (@TypeOf(self), objc.SEL, @TypeOf(arg1), @TypeOf(arg2), @TypeOf(arg3)) callconv(.C) objc.id;
+    const FnType = *const fn (@TypeOf(self), objc.SEL, @TypeOf(arg1), @TypeOf(arg2), @TypeOf(arg3)) callconv(.C) objc.id;
 
-    var func = @ptrCast(FnType, objc.objc_msgSend);
+    var func = @ptrCast(FnType, &objc.objc_msgSend);
 
-    return @call(.{}, func, .{ self, selector, arg1, arg2, arg3 });
+    // return @call(.{}, func, .{ self, selector, arg1, arg2, arg3 });
+    return @call(.auto, func, .{ self, selector, arg1, arg2, arg3 });
 }
 fn msgSend_8(self: objc.id, selector: objc.SEL, arg1: objc.id) objc.id {
-    const FnType = fn (@TypeOf(self), objc.SEL, @TypeOf(arg1)) callconv(.C) objc.id;
+    const FnType = *const fn (@TypeOf(self), objc.SEL, @TypeOf(arg1)) callconv(.C) objc.id;
 
-    var func = @ptrCast(FnType, objc.objc_msgSend);
+    var func = @ptrCast(FnType, &objc.objc_msgSend);
 
-    return @call(.{}, func, .{ self, selector, arg1 });
+    // return @call(.{}, func, .{ self, selector, arg1 });
+    return @call(.auto, func, .{ self, selector, arg1 });
 }
+
+const Object = struct { value: objc.id, pub usingnamespace MsgSend(Object); };
 
 fn msgSend_9(self: objc.id, selector: objc.SEL, arg1: geo.NSRect, arg2: objc.NSUInteger, arg3: objc.NSUInteger, arg4: objc.BOOL) callconv(.C) objc.id {
-    return new_window_msgSend(self, selector, arg1, arg2, arg3, arg4);
+    // const FnType = *const fn (@TypeOf(self), objc.SEL, @TypeOf(arg1), @TypeOf(arg2), @TypeOf(arg3), @TypeOf(arg4)) callconv(.C) objc.id;
+
+    // var func = @ptrCast(FnType, &objc.objc_msgSend);
+
+    // return @call(.{}, func, .{ self, selector, arg1, arg2, arg3, arg4 });
+
+    const o: Object = .{ .value = self };
+    return o.msgSend(Object, Selector { .value = selector }, .{arg1, arg2, arg3, arg4}).value;
+
+    // return new_window_msgSend(self, selector, arg1, arg2, arg3, arg4);
 }
 fn msgSend_10(self: objc.id, selector: objc.SEL, arg1: objc.BOOL) void {
-    const FnType = fn (@TypeOf(self), objc.SEL, @TypeOf(arg1)) callconv(.C) void;
+    const FnType = *const fn (@TypeOf(self), objc.SEL, @TypeOf(arg1)) callconv(.C) void;
 
-    var func = @ptrCast(FnType, objc.objc_msgSend);
+    var func = @ptrCast(FnType, &objc.objc_msgSend);
 
-    return @call(.{}, func, .{ self, selector, arg1 });
+    // return @call(.{}, func, .{ self, selector, arg1 });
+    return @call(.auto, func, .{ self, selector, arg1 });
 }
 fn msgSend_11(self: objc.id, selector: objc.SEL, arg1: c_ulong, arg2: objc.id, arg3: objc.id, arg4: objc.BOOL) objc.id {
-    const FnType = fn (@TypeOf(self), objc.SEL, @TypeOf(arg1), @TypeOf(arg2), @TypeOf(arg3), @TypeOf(arg4)) callconv(.C) objc.id;
+    const FnType = *const fn (@TypeOf(self), objc.SEL, @TypeOf(arg1), @TypeOf(arg2), @TypeOf(arg3), @TypeOf(arg4)) callconv(.C) objc.id;
 
-    var func = @ptrCast(FnType, objc.objc_msgSend);
+    var func = @ptrCast(FnType, &objc.objc_msgSend);
 
-    return @call(.{}, func, .{ self, selector, arg1, arg2, arg3, arg4 });
+    // return @call(.{}, func, .{ self, selector, arg1, arg2, arg3, arg4 });
+    return @call(.auto, func, .{ self, selector, arg1, arg2, arg3, arg4 });
 }
 
 fn shareedApp() objc.id {
@@ -127,7 +151,10 @@ fn makeQuitMenuItemName() objc.id {
     return msgSend_8(prefix, stringByAppendingStringSEL, name);
 }
 
-fn applicationWillFinishLaunching(_: objc.id, _: objc.SEL, _: objc.id) void {
+fn applicationWillFinishLaunching(sender: objc.id, _: objc.SEL, notification: objc.id) void {
+    std.debug.print("id#2 => {any}\n", .{sender});
+    std.debug.print("id#3 => {any}\n", .{notification});
+
     var allocSEL: objc.SEL = objc.sel_registerName("alloc");
     std.debug.assert(allocSEL != null);
 
@@ -258,7 +285,7 @@ fn applicationWillFinishLaunching(_: objc.id, _: objc.SEL, _: objc.id) void {
         var windowWillCloseSEL: objc.SEL = objc.sel_registerName("windowWillClose:");
         std.debug.assert(windowWillCloseSEL != null);
 
-        var res: objc.BOOL = objc.class_addMethod(WindowDelegateClass, windowWillCloseSEL, @ptrCast(objc.IMP, windowWillClose), "v@:@");
+        var res: objc.BOOL = objc.class_addMethod(WindowDelegateClass, windowWillCloseSEL, @ptrCast(objc.IMP, &windowWillClose), "v@:@");
         std.debug.assert(res != 0);
     }
 
@@ -295,6 +322,7 @@ pub fn main() anyerror!void {
     {
         var AppDelegateProtocol: [*c]objc.Protocol = objc.objc_getProtocol("NSApplicationDelegate");
 
+
         var res: objc.BOOL = objc.class_addProtocol(AppDelegateClass, AppDelegateProtocol);
         std.debug.assert(res != 0);
     }
@@ -303,7 +331,7 @@ pub fn main() anyerror!void {
         var willFinishLaunchingSEL: objc.SEL = objc.sel_registerName("applicationWillFinishLaunching:");
         std.debug.assert(willFinishLaunchingSEL != null);
 
-        var res: objc.BOOL = objc.class_addMethod(AppDelegateClass, willFinishLaunchingSEL, @ptrCast(objc.IMP, applicationWillFinishLaunching), "v@:@");
+        var res: objc.BOOL = objc.class_addMethod(AppDelegateClass, willFinishLaunchingSEL, @ptrCast(objc.IMP, &applicationWillFinishLaunching), "v@:@");
         std.debug.assert(res != 0);
     }
 
@@ -315,6 +343,8 @@ pub fn main() anyerror!void {
         break :brk msgSend_4(alloc, initSEL);
     };
     std.debug.assert(delegate != null);
+
+    std.debug.print("id#1 => {any}\n", .{delegate});
 
     var setDelegateSEL: objc.SEL = objc.sel_registerName("setDelegate:");
 
