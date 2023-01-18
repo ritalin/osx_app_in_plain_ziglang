@@ -31,7 +31,7 @@ const AppBundleStep = struct {
         topLevel.dependOn(&self.step);
     }
 
-    fn makePlist(self: *Self, path: []u8) !void {
+    fn makePlist(self: *Self, path: []u8, bundleName: []const u8) !void {
         var content = 
             try std.fmt.allocPrint(self.builder.allocator,
                 \\<?xml version="1.0" encoding="UTF-8"?>
@@ -50,7 +50,7 @@ const AppBundleStep = struct {
                 \\    <string>APPL</string>
                 \\</dict>
                 \\</plist>
-            , .{ self.bundleName });
+            , .{ bundleName });
 
         var f = try std.fs.createFileAbsolute(path, .{ });
 
@@ -58,7 +58,7 @@ const AppBundleStep = struct {
     }
 
     fn make(step: *std.build.Step) !void {
-        const self = @fieldParentPtr(Self, "step", step);
+        var self = @fieldParentPtr(Self, "step", step);
 
         var pathFrom = self.artifact.getOutputSource().getPath(self.builder);
         var pathTo = self.builder.install_path;
@@ -81,7 +81,7 @@ const AppBundleStep = struct {
             }
         } 
         else |_| {
-            try self.makePlist(plistPath);
+            try self.makePlist(plistPath, baseNmae);
         }
     }
 };
@@ -98,12 +98,12 @@ pub fn build(b: *std.build.Builder) void {
     const mode = b.standardReleaseOptions();
 
     const exe = b.addExecutable("osx_app_in_plain_ziglang", "src/main.zig");
-    exe.addSystemIncludeDir("/usr/include");
+    exe.addSystemIncludePath("/usr/include");
     
-    exe.addIncludeDir(".");
+    exe.addIncludePath(".");
     exe.addCSourceFiles(&[_][]const u8{ "src/runloop.c" }, &[0][]const u8{});
 
-    exe.addFrameworkDir("/System/Library/Frameworks");
+    exe.addFrameworkPath("/System/Library/Frameworks");
     exe.linkFramework("Foundation");
     exe.linkFramework("AppKit");
     exe.setTarget(target);
